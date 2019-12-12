@@ -8,7 +8,7 @@ let routes = [
   {
     path: "/login",
     component: Login,
-    name: "",
+    name: "登录",
     hidden: true
   },
   {
@@ -25,7 +25,7 @@ let routes = [
   {
     path: "*",
     hidden: true,
-    redirect: { path: "/404" }
+    redirect: { path: "/login" }
   }
 ];
 

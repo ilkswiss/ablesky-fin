@@ -1,26 +1,35 @@
 <template>
   <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-    <h3 class="title">系统登录</h3>
+    <h3 class="title">财务系统登录</h3>
     <el-form-item prop="account">
       <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
     <el-form-item prop="checkPass">
       <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <!-- <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox> -->
+    <el-form-item class=" " label="">
+          <el-row>
+            <el-input style="width:70%" v-model="code" placeholder="填写验证码"></el-input>
+            <el-button class="validateCode" @click="sendMsg()" :disabled="isDisabled">{{buttonName}}</el-button>
+          </el-row>
+        </el-form-item>
     <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" :loading="logining">登录</el-button>
-      <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
+      <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit2" >登录</el-button>
+      
     </el-form-item>
   </el-form>
 </template>
 
 <script>
-  import { requestLogin } from '../api/api';
+  import { requestLogin,phoneCode } from '../api/api';
   //import NProgress from 'nprogress'
   export default {
     data() {
       return {
+      code:'',
+      buttonName: "发送短信",
+      isDisabled: false,
+      time: 60,
         logining: false,
         ruleForm2: {
           account: '',
@@ -40,26 +49,52 @@
       };
     },
     methods: {
+      sendMsg() {
+      phoneCode().then(data => {
+        this.$message({
+          message: "验证码已发送，5分钟内有效",
+          center: true
+        });
+      });
+      let me = this;
+      me.isDisabled = true;
+      let interval = window.setInterval(function() {
+        me.buttonName = me.time + "后重新发送";
+        --me.time;
+        if (me.time < 0) {
+          me.buttonName = "重新发送";
+          me.time = 60;
+          me.isDisabled = false;
+          window.clearInterval(interval);
+        }
+      }, 1000);
+    },
       handleReset2() {
         this.$refs.ruleForm2.resetFields();
       },
       handleSubmit2(ev) {
-        var _this = this;
+        var loginParams = { accountName: this.ruleForm2.account, accountPwd: this.ruleForm2.checkPass }
+       if(loginParams.accountName=="" && loginParams.accountPwd==""){
+          this.$message({
+            message:"请确认输入了账号或密码",
+            type:"error"
+          })
+       }else{
+          var _this = this;
         this.$refs.ruleForm2.validate((valid) => {
           if (valid) {
-            this.logining = true;
-            var loginParams = { accountName: this.ruleForm2.account, accountPwd: this.ruleForm2.checkPass };
+            var loginParams = { accountName: this.ruleForm2.account, accountPwd: this.ruleForm2.checkPass,
+            code:this.code };
             requestLogin(loginParams).then(res => {
-              this.logining = false;
               let { status, message, data } = res;
               if (status !== "success") {
                 this.$message({
                   message: message,
                   type: 'error'
                 });
-              } else if(status==="success") {
+              } else if(status=="success") {
                 sessionStorage.setItem('accountName', JSON.stringify(loginParams.accountName));
-                sessionStorage.setItem('accountID', data);
+                sessionStorage.setItem('accountID', data);//financeID
                 this.$router.push({ path: '/productlist' });
               }
             });
@@ -68,6 +103,7 @@
             return false;
           }
         });
+       }
       }
     }
   }

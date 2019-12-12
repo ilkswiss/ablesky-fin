@@ -7,7 +7,12 @@ export const requestLogin = params => {
     .get(`${base}/financeAccount/login`, { params: params })
     .then(res => res.data);
 };
-
+//短信验证码
+export const phoneCode = params => {
+  return axios
+    .get(`http://192.168.3.253:8081/financeAccount/sendCode`)
+    .then(res => res.data);
+};
 export const getUserList = params => {
   return axios.get(`${base}/user/list`, { params: params });
 };
