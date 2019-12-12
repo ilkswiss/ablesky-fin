@@ -24,11 +24,11 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   //NProgress.start();
-  if (to.path === '/login') {
+  if (to.path === '/finance/login') {
     sessionStorage.removeItem('accountName');
     sessionStorage.removeItem('accountID');
   }
-  if (to.path==='/login') {
+  if (to.path==='/finance/login' || to.path==='/finance/') {
     next()
     return;
   } else{

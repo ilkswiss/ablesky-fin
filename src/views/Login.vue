@@ -7,10 +7,10 @@
     <el-form-item prop="checkPass">
       <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
-    <el-form-item class=" " label="">
+    <el-form-item label="">
           <el-row>
-            <el-input style="width:70%" v-model="code" placeholder="填写验证码"></el-input>
-            <el-button class="validateCode" @click="sendMsg()" :disabled="isDisabled">{{buttonName}}</el-button>
+            <el-input style="width:60%" v-model="code" placeholder="填写验证码"></el-input>
+            <el-button  class="validateCode" @click="sendMsg()" :disabled="isDisabled">{{buttonName}}</el-button>
           </el-row>
         </el-form-item>
     <el-form-item style="width:100%;">
@@ -95,7 +95,7 @@
               } else if(status=="success") {
                 sessionStorage.setItem('accountName', JSON.stringify(loginParams.accountName));
                 sessionStorage.setItem('accountID', data);//financeID
-                this.$router.push({ path: '/productlist' });
+                this.$router.push({ path: '/home' });// finance/productlist
               }
             });
           } else {

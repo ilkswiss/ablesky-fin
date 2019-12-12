@@ -6,26 +6,26 @@ import ReCharge from "./views/step/reCharge.vue";
 
 let routes = [
   {
-    path: "/login",
+    path: "/finance/login",
     component: Login,
     name: "登录",
     hidden: true
   },
   {
-    path: "/",
+    path: "/home",
     component: Home,
     name: "导航栏",
-    redirect: "/productlist",
+    redirect: "/finance/productlist",
     children: [
-      { path: "/productlist", component: ProductList, name: "可购买商品列表" },
-      { path: "/ordercheck", component: OrderCheck, name: "订单查询" },
-      { path: "/recharge", component: ReCharge, name: "充值" }
+      { path: "/finance/productlist", component: ProductList, name: "可购买商品列表" },
+      { path: "/finance/ordercheck", component: OrderCheck, name: "订单查询" },
+      { path: "/finance/recharge", component: ReCharge, name: "充值" }
     ]
   },
   {
     path: "*",
     hidden: true,
-    redirect: { path: "/login" }
+    redirect: { path: "/finance/login" }
   }
 ];
 
